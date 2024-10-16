@@ -14,7 +14,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -48,13 +47,13 @@ fun TopBar(title: String, onClick: (() -> Unit)? = null) {
 
 @Composable
 fun ContentHomeView(booksViewModel: BooksViewModel, padding: PaddingValues, navController: NavController) {
-    val uiState by booksViewModel.booksUiState.collectAsState()
+    val uiState = booksViewModel.bookUiState.collectAsState()
+    val state = uiState.value
 
-    when (uiState) {
+    when (state) {
         is BookUiState.LoadBooks -> {
-            val books = (uiState as BookUiState.LoadBooks).books
             LazyColumn(modifier = Modifier.padding(padding)) {
-                items(books) { book ->
+                items(state.books) { book ->
                     CardView(book = book) {
                         navController.navigate("DetailView/${book.title}")
                     }

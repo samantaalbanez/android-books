@@ -21,7 +21,7 @@ fun LoadingComponent() {
     ) {
         CircularProgressIndicator(
             modifier = Modifier
-                .width(100.dp)
+                .width(60.dp)
                 .wrapContentSize(Alignment.Center)
                 .fillMaxWidth(),
             color = Color.Blue,
