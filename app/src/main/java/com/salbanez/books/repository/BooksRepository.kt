@@ -7,5 +7,9 @@ import javax.inject.Inject
 
 class BooksRepository @Inject constructor(private val booksApi: BooksApi) {
 
-    suspend fun getBooks(): List<Book>? = resolveResponse(booksApi.getBooks())
+    suspend fun getBooks(): List<Book>? = try {
+        resolveResponse(booksApi.getBooks())
+    } catch (e: Exception) {
+        null
+    }
 }

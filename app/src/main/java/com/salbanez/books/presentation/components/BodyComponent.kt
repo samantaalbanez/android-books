@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
+import com.salbanez.books.viewmodel.BookUiState
 import com.salbanez.books.viewmodel.BooksViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,13 +48,20 @@ fun TopBar(title: String, onClick: (() -> Unit)? = null) {
 
 @Composable
 fun ContentHomeView(booksViewModel: BooksViewModel, padding: PaddingValues, navController: NavController) {
-    val books by booksViewModel.books.collectAsState()
+    val uiState by booksViewModel.booksUiState.collectAsState()
 
-    LazyColumn(modifier = Modifier.padding(padding)) {
-        items(books) { book ->
-            CardView(book = book) {
-                navController.navigate("DetailView/${book.title}")
+    when (uiState) {
+        is BookUiState.LoadBooks -> {
+            val books = (uiState as BookUiState.LoadBooks).books
+            LazyColumn(modifier = Modifier.padding(padding)) {
+                items(books) { book ->
+                    CardView(book = book) {
+                        navController.navigate("DetailView/${book.title}")
+                    }
+                }
             }
         }
+        is BookUiState.ShowError -> ErrorComponent()
+        is BookUiState.Loading -> LoadingComponent()
     }
 }
