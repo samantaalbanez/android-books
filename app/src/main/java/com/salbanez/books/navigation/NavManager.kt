@@ -26,7 +26,8 @@ fun NavManager(booksViewModel: BooksViewModel){
         )){
             DetailView(
                 navController = navController,
-                title = it.toId()
+                title = it.toId(),
+                booksViewModel = booksViewModel
             )
         }
     }
