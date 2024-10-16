@@ -3,6 +3,7 @@
 Application developed to list books using an API.
 
 ## Main Technologies
+
 - Compose
 - Retrofit
 - Dagger
