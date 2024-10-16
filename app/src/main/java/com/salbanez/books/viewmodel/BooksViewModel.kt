@@ -1,6 +1,7 @@
 package com.salbanez.books.viewmodel
 
 import androidx.lifecycle.ViewModel
+import com.salbanez.books.model.Book
 import com.salbanez.books.repository.BooksRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -16,6 +17,11 @@ class BooksViewModel @Inject constructor(private val repository: BooksRepository
     private val _bookUiState = MutableStateFlow<BookUiState>(BookUiState.Loading)
     val bookUiState: StateFlow<BookUiState> = _bookUiState
 
+    private val _bookUiAction = MutableStateFlow<BookUiAction>(BookUiAction.Idle)
+    val bookUiAction: StateFlow<BookUiAction> = _bookUiAction
+
+    private var books: List<Book> = emptyList()
+
     init {
         getBooks()
     }
@@ -23,13 +29,20 @@ class BooksViewModel @Inject constructor(private val repository: BooksRepository
     private fun getBooks() {
         CoroutineScope(Dispatchers.IO).launch {
             runCatching {
-                val result = repository.getBooks()
-                _bookUiState.value = if(!result.isNullOrEmpty()) {
-                    BookUiState.LoadBooks(books = result)
+                books = repository.getBooks() ?: emptyList()
+                _bookUiState.value = if(books.isNotEmpty()) {
+                    BookUiState.LoadBooks(books = books)
                 } else {
                     BookUiState.ShowError
                 }
             }
+        }
+    }
+
+    fun getBook(title: String) {
+        val book = books.find { book -> title.equals(book.title) }
+        book?.let {
+            _bookUiAction.value = BookUiAction.SelectBook(it)
         }
     }
 }
