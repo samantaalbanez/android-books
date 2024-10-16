@@ -56,6 +56,7 @@ fun ContentHomeView(booksViewModel: BooksViewModel, padding: PaddingValues, navC
                 items(state.books) { book ->
                     CardView(book = book) {
                         navController.navigate("DetailView/${book.title}")
+                        booksViewModel.getBook(title = book.title)
                     }
                 }
             }
